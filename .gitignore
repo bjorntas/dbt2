@@ -5,3 +5,4 @@ logs/
 dbt_internal_packages/
 profiles.yml
 venv/
+.user.yml
