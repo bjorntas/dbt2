@@ -1,6 +1,6 @@
 sources:
   - name: jaffle_shop
-    +database: "{{ env_var('DBT_ENVIRONMENT') }}_raw"
+    database: raw
     tables:
       - name: customers
         freshness:

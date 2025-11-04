@@ -1,0 +1,3 @@
+SELECT 1 AS number
+UNION ALL
+SELECT 2
