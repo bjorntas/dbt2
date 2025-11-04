@@ -1,32 +1,36 @@
 {% macro generate_schema_name(custom_schema_name, node) -%}
-
-    {%- set default_schema = target.schema -%}
-
-    {%- if custom_schema_name is none -%}
-        {# If no schema is set in dbt_project.yml or directly in the model #}
-
-        {%- if node.fqn[1:-1]|length == 0 -%}
-            {# If the model isnt placed in a subfolder, use the default schema #}
-            {{ default_schema }}    
-        {%- else -%}
-            {# otherwise, use the folder structure as the schema name #}
-            {%- set folder_as_schema = node.fqn[1:-1]|join('_') -%}
-
-            {%- if target.name == "user" -%}
-                {{ folder_as_schema | trim }}
-            {%- else -%}
-                {{ default_schema }}_{{ folder_as_schema | trim }}
-            {%- endif -%}
-        {%- endif -%}
-
+    {#
+        Generates schema names with the following rules:
+        1. If custom_schema_name is provided (in dbt_project.yml or model config), use that
+        2. Otherwise, generates schema name from the folder structure after the database name
+        3. For 'snowflake-dev-user', prefixes with the default schema
+           (e.g., 'analytics' becomes '<user_schema>_analytics')
+        4. In production or in a dev deployment, uses the schema name as-is
+    #}
+    
+    {%- set default_schema = target.schema | trim -%}
+    {%- set is_dev = target.name == "snowflake-dev-user" -%}
+    {%- set is_deployment = (target.name == "dev" or target.name == "prod") -%}
+    {%- set schema_name = none -%}
+    
+    {# Handle custom schema name if provided #}
+    {%- if custom_schema_name is not none -%}
+        {% set schema_name = custom_schema_name | trim %}
+    
+    {# No custom schema - generate from folder structure #}
     {%- else -%}
-
-        {%- if target.name == "user" -%}
-            {{ default_schema }}_{{ custom_schema_name | trim }}
-        {%- else -%}
-            {{ custom_schema_name | trim }}
-        {%- endif -%}
-
+        {% set path_parts = node.fqn[2:-1] if node and node.fqn and node.fqn|length > 2 else [] %}
+        {% if path_parts | length > 0 %}
+            {% set schema_name = path_parts | join('_') | trim %}
+        {% else %}
+            {% set schema_name = default_schema %}
+        {% endif %}
     {%- endif -%}
-
+    
+    {# Apply userschema as prefix if in dev environment and not a deployment #}
+    {%- if is_dev and not is_deployment and schema_name != default_schema -%}
+        {{ default_schema }}_{{ schema_name }}
+    {%- else -%}
+        {{ schema_name }}
+    {%- endif -%}
 {%- endmacro %}

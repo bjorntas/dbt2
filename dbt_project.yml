@@ -33,16 +33,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   dbt2:
     # Config indicated by + and applies to all files under models/example/
-    bronze:
-      bootcamp:
-        +schema: bootcamp
-        +enabled: false
-        
+
     silver:
       +materialized: table
 
     gold:
       +materialized: table
-
-    legacy:
-      +database: legacy
