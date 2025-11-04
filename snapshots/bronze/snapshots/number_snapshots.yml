@@ -1,0 +1,10 @@
+snapshots:
+  - name: number_snapshots
+    relation: ref('stg_db1__numbers')
+    config:
+      database: bronze
+      schema: db1_snapshots
+      unique_key: number
+      strategy: check
+      check_cols: ['number', 'is_good']
+      hard_deletes: ignore
