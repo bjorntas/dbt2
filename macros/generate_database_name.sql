@@ -6,11 +6,9 @@
         {{ default_database }}
 
     {%- else -%}
-        {%- if target.name == 'user' -%}
-            {{ 'dev_sandbox' }}
-        {%- else -%}
-            {{ custom_database_name | trim }}
-        {%- endif -%}
+
+        {{ custom_database_name | trim }}
+
 
     {%- endif -%}
 
