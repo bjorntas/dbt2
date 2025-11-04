@@ -8,10 +8,10 @@
     #}
     
     {%- set default_database = target.database | trim -%}
-    {%- set environment = 'dev' if target.name == 'snowflake-dev-user' else target.name -%}
+    {%- set environment = 'dev' if target.name == 'default' else target.name -%}
     
     {# For snowflake-dev-user, always use the target database with environment prefix #}
-    {%- if target.name == 'snowflake-dev-user' -%}
+    {%- if target.name == 'default' -%}
         {{ environment }}_{{ default_database }}
     
     {# For other targets, use the standard logic #}
