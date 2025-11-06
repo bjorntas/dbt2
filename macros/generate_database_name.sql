@@ -3,8 +3,8 @@
         Generates database names with the following rules:
         1. If custom_database_name is provided, use that
         2. Otherwise, use the first folder name after the models folder
-        3. For 'snowflake-dev-user', always use the target database directly (which should be sandbox)
-        4. Always prefix with the environment name (dev_ for snowflake-dev-user)
+        3. For 'default', always use the target database directly (which should be sandbox)
+        4. Always prefix with the environment name (dev_ for default)
     #}
     
     {%- set default_database = target.database | trim -%}
@@ -26,6 +26,10 @@
         {% endif %}
     {%- endif -%}
 
-    {{ db_name }}
+    {% if target.name == 'default' %}
+        {% set db_name = default_database %}
+    {% endif %}
+
+    {{ environment }}_{{ db_name }}
 
 {%- endmacro %}

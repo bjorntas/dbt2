@@ -1,6 +1,6 @@
 sources:
   - name: jaffle_shop
-    database: raw
+    database: dev_raw
     tables:
       - name: customers
         config:

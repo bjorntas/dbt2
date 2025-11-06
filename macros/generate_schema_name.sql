@@ -3,7 +3,7 @@
         Generates schema names with the following rules:
         1. If custom_schema_name is provided (in dbt_project.yml or model config), use that
         2. Otherwise, generates schema name from the folder structure after the database name
-        3. For 'snowflake-dev-user', prefixes with the default schema
+        3. For 'default', prefixes with the default schema
            (e.g., 'analytics' becomes '<user_schema>_analytics')
         4. In production or in a dev deployment, uses the schema name as-is
     #}
