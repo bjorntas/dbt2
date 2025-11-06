@@ -9,8 +9,7 @@
     #}
     
     {%- set default_schema = target.schema | trim -%}
-    {%- set is_dev = target.name == "snowflake-dev-user" -%}
-    {%- set is_deployment = (target.name == "dev" or target.name == "prod") -%}
+    {%- set is_deployment = target.name != "default" -%}
     {%- set schema_name = none -%}
     
     {# Handle custom schema name if provided #}
@@ -28,7 +27,7 @@
     {%- endif -%}
     
     {# Apply userschema as prefix if in dev environment and not a deployment #}
-    {%- if is_dev and not is_deployment and schema_name != default_schema -%}
+    {%- if not is_deployment and schema_name != default_schema -%}
         {{ default_schema }}_{{ schema_name }}
     {%- else -%}
         {{ schema_name }}

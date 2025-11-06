@@ -8,30 +8,24 @@
     #}
     
     {%- set default_database = target.database | trim -%}
-    {%- set environment = 'dev' if target.name == 'snowflake-dev-user' else target.name -%}
+    {%- set environment = 'dev' if target.name == 'default' else target.name -%}
     
-    {# For snowflake-dev-user, always use the target database with environment prefix #}
-    {%- if target.name == 'snowflake-dev-user' -%}
-        {{ environment }}_{{ default_database }}
+    {%- set db_name = none -%}
     
-    {# For other targets, use the standard logic #}
+    {# Handle custom database name if provided #}
+    {%- if custom_database_name is not none -%}
+        {% set db_name = custom_database_name | trim %}
+    
+    {# No custom database - generate from folder structure #}
     {%- else -%}
-        {%- set db_name = none -%}
-        
-        {# Handle custom database name if provided #}
-        {%- if custom_database_name is not none -%}
-            {% set db_name = custom_database_name | trim %}
-        
-        {# No custom database - generate from folder structure #}
-        {%- else -%}
-            {% set first_folder = node.fqn[1] if node and node.fqn and node.fqn|length > 1 else none %}
-            {% if first_folder %}
-                {% set db_name = first_folder | trim %}
-            {% else %}
-                {% set db_name = default_database %}
-            {% endif %}
-        {%- endif -%}
-
-        {{ environment }}_{{ db_name }}
+        {% set first_folder = node.fqn[1] if node and node.fqn and node.fqn|length > 1 else none %}
+        {% if first_folder %}
+            {% set db_name = first_folder | trim %}
+        {% else %}
+            {% set db_name = default_database %}
+        {% endif %}
     {%- endif -%}
+
+    {{ db_name }}
+
 {%- endmacro %}
