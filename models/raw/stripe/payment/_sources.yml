@@ -1,5 +1,6 @@
 sources:
   - name: stripe
+    database: raw
     tables:
       - name: payment
         freshness:

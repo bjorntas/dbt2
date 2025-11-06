@@ -1,8 +1,9 @@
 sources:
   - name: jaffle_shop
-    +database: "{{ env_var('DBT_ENVIRONMENT') }}_raw"
+    database: raw
     tables:
       - name: customers
-        freshness:
-          warn_after: {count: 1, period: day}
-          error_after: {count: 2, period: day}
+        config:
+          freshness:
+            warn_after: {count: 1, period: day}
+            error_after: {count: 2, period: day}
